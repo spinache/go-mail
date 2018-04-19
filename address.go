@@ -10,7 +10,8 @@ import (
 
 type Address interface {
 	String() string
-	Name()   string
+	Name() string
+	GetAddress() string
 }
 
 type MailboxAddr struct {
@@ -19,6 +20,9 @@ type MailboxAddr struct {
 	domain string
 }
 
+func (ma MailboxAddr) GetAddress() string {
+	return fmt.Sprintf("%s@%s", ma.local, ma.domain)
+}
 func (ma MailboxAddr) Name() string {
 	if ma.name == "" {
 		return fmt.Sprintf("%s@%s", ma.local, ma.domain)
@@ -43,6 +47,10 @@ func (ga GroupAddr) Name() string {
 }
 
 func (ga GroupAddr) String() string {
+	return ""
+}
+
+func (ma GroupAddr) GetAddress() string {
 	return ""
 }
 
@@ -79,7 +87,7 @@ func parseAddress(toks []token) (Address, error) {
 					return nil, err
 				}
 				ga.boxes = append(ga.boxes, ma)
-				last = i+1
+				last = i + 1
 			}
 			something = true
 		}
@@ -123,6 +131,11 @@ func parseMailboxAddr(ts []token) (ma MailboxAddr, err error) {
 func parseSimpleAddr(ts []token) (l, d string, e error) {
 	// The second token must be '@' - all further tokens are stuck in the domain.
 	l = string(ts[0])
+
+	if len(ts) == 1 {
+		return "", "", nil
+	}
+
 	if !(len(ts[1]) == 1 && ts[1][0] == '@') {
 		return "", "", errors.New("invalid simpleAddr")
 	}

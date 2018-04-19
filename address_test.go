@@ -42,6 +42,10 @@ var parseAddressTests = []parseAddressTest{
 		MailboxAddr{`Pete`, `pete`, `silly.example`},
 	},
 	parseAddressTest{
+		`Pete`,
+		MailboxAddr{``, ``, ``},
+	},
+	parseAddressTest{
 		`A Group:Ed Jones <c@a.test>,joe@where.test,John <jdoe@one.test>;`,
 		GroupAddr{
 			`A Group`,
